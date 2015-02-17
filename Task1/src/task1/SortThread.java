@@ -3,7 +3,7 @@ package task1;
 import java.util.*;
 
 public class SortThread extends Thread{
-        ArrayList al;
+        private ArrayList al;
         SortThread (ArrayList al) {
             this.al = al;
         }
