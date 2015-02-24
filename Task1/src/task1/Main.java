@@ -13,6 +13,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
+
     private void solve() throws IOException, InterruptedException {
         ArrayList <Juice> juices = new ArrayList();
         ArrayList <ArrayList <String>> data = new ArrayList();

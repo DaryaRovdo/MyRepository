@@ -7,6 +7,7 @@ public class SortThread extends Thread{
         SortThread (ArrayList al) {
             this.al = al;
         }
+
         @Override
         public void run() {
             Collections.sort(al, new Comparator <String> () {
