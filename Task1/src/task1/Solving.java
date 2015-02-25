@@ -5,13 +5,11 @@ public class Solving {
     public ArrayList<Juice> getJuices(ArrayList <ArrayList <String>> data) {
         ArrayList <Juice> juices = new ArrayList();
         Iterator <ArrayList <String>> it = data.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Juice j = new Juice();
-            ArrayList <String> al = it.next();
-            Iterator <String> iter = al.iterator();
-            while (iter.hasNext())
-            {
+            ArrayList <String> aL = it.next();
+            Iterator <String> iter = aL.iterator();
+            while (iter.hasNext()) {
                 j.get().add(iter.next());
             }
             juices.add(j);
@@ -22,12 +20,10 @@ public class Solving {
     public ArrayList <String> getComponents (ArrayList <ArrayList <String>> data) {
         ArrayList <String> components = new ArrayList();
         Iterator <ArrayList <String>> it = data.iterator();
-        while (it.hasNext())
-        {
-            ArrayList <String> j = it.next();
-            Iterator <String> iter = j.iterator();
-            while (iter.hasNext())
-            {
+        while (it.hasNext()) {
+            ArrayList <String> aL = it.next();
+            Iterator <String> iter = aL.iterator();
+            while (iter.hasNext()) {
                 components.add(iter.next());
             }
         }
@@ -38,14 +34,12 @@ public class Solving {
         SortThread st = new SortThread(components);
         st.start();
         st.join();
-        int n = components.size();
-        for (int i = 0; i < n - 1; i++)
-        {
-            if (components.get(i).compareTo(components.get(i + 1)) == 0)
-            {
+        int size = components.size();
+        for (int i = 0; i < size - 1; i++) {
+            if (components.get(i).compareTo(components.get(i + 1)) == 0) {
                 components.remove(i);
                 i--;
-                n--;
+                size--;
             }
         }
         return components;
@@ -53,17 +47,14 @@ public class Solving {
 
     public TreeMap <String, Integer> getComponentsAmount(ArrayList <String> components) {
         TreeMap <String, Integer> componentsAmount = new TreeMap();
-        Integer n;
-        for (String str : components)
-        {
-            n = componentsAmount.get(str);
-            if (n == null)
-            {
+        Integer amount;
+        for (String str : components) {
+            amount = componentsAmount.get(str);
+            if (amount == null) {
                 componentsAmount.put(str, 1);
             }
-            else
-            {
-                componentsAmount.put(str, n + 1);
+            else {
+                componentsAmount.put(str, amount + 1);
             }
         }
         return componentsAmount;
@@ -71,10 +62,8 @@ public class Solving {
 
     private int minAmount (Juice j, TreeMap <String, Integer> count) {
         int min = Integer.MAX_VALUE;
-        for (String component : j.get())
-        {
-            if (count.get(component) < min)
-            {
+        for (String component : j.get()) {
+            if (count.get(component) < min) {
                 min = count.get(component);
             }
         }
@@ -84,42 +73,35 @@ public class Solving {
     private void sortCount (ArrayList <Juice> juices, final TreeMap <String, Integer> count) {
         Collections.sort(juices, new Comparator <Juice> () {
                 @Override
-                public int compare(Juice a, Juice b) {
-                    if (a.get().size() > b.get().size())
-                    {
+                public int compare(Juice first, Juice second) {
+                    if (first.get().size() > second.get().size()) {
                         return 1;
                     }
-                    else if (a.get().size() < b.get().size())
-                    {
+                    else if (first.get().size() < second.get().size()) {
                         return -1;
                     }
-                    else if (minAmount(a, count) < minAmount(b, count))
-                    {
+                    else if (minAmount(first, count) < minAmount(second, count)) {
                         return -1;
                     }
-                    else
-                    {
+                    else {
                         return 1;
                     }
                 }
             });
     }
 
-    private boolean isSubset (TreeSet <String> test, TreeSet <String> set) {
-        return set.containsAll(test);
+    private boolean isSubset (TreeSet <String> testSet, TreeSet <String> set) {
+        return set.containsAll(testSet);
     }
 
     private ArrayList <Juice> getUnique (ArrayList <Juice> juices) {
-        int n = juices.size();
-        for (int i = 0; i < n - 1; i++)
-        {
-            if (juices.get(i).get().size() == juices.get(i + 1).get().size())
-            {
-                if (juices.get(i).get().equals(juices.get(i + 1).get()))
-                {
+        int size = juices.size();
+        for (int i = 0; i < size - 1; i++) {
+            if (juices.get(i).get().size() == juices.get(i + 1).get().size()) {
+                if (juices.get(i).get().equals(juices.get(i + 1).get())) {
                     juices.remove(i);
                     i--;
-                    n--;
+                    size--;
                 }
             }
         }
@@ -130,20 +112,17 @@ public class Solving {
         int amount = 0;
         sortCount(juices, componentsAmount);
         juices = getUnique(juices);
-        TreeSet <String> current = new TreeSet();
-        int n = juices.size();
-        while (!juices.isEmpty())
-        {
-            current = juices.get(0).get();
+        TreeSet <String> currentComponents = new TreeSet();
+        int size = juices.size();
+        while (!juices.isEmpty()) {
+            currentComponents = juices.get(0).get();
             juices.remove(0);
-            n--;
-            for (int i = 0; i < n; i++)
-            {
-                if (isSubset(current, juices.get(i).get()))
-                {
-                    current = juices.get(i).get();
+            size--;
+            for (int i = 0; i < size; i++) {
+                if (isSubset(currentComponents, juices.get(i).get())) {
+                    currentComponents = juices.get(i).get();
                     juices.remove(i);
-                    n--;
+                    size--;
                     i--;
                 }
             }

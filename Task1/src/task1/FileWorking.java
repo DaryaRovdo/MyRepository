@@ -5,21 +5,19 @@ import java.io.*;
 public class FileWorking {
     public  ArrayList <ArrayList <String>> input(String name) throws IOException {
         BufferedReader in = new BufferedReader(new FileReader(name));
-        String temp = in.readLine();
+        String tempString = in.readLine();
         StringTokenizer sT;
         ArrayList <ArrayList <String>> data = new ArrayList();
-        while (temp != null)
-        {
-            sT = new StringTokenizer(temp);
-            int n = sT.countTokens();
-            ArrayList <String> j = new ArrayList();
-            for (int i = 0; i < n; i++)
-            {
+        while (tempString != null) {
+            sT = new StringTokenizer(tempString);
+            int count = sT.countTokens();
+            ArrayList <String> aL = new ArrayList();
+            for (int i = 0; i < count; i++) {
                 String s = sT.nextToken();
-                j.add(s);
+                aL.add(s);
             }
-            data.add(j);
-            temp = in.readLine();
+            data.add(aL);
+            tempString = in.readLine();
         }
         in.close();
         return data;
@@ -28,17 +26,16 @@ public class FileWorking {
     public void printComponents(ArrayList <String> components, String name) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(name));
         Iterator <String> iter = components.iterator();
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             out.println(iter.next());
         }
         out.flush();
         out.close();
     }
 
-    public void printAmount(int n, String name) throws IOException{
+    public void printAmount(int amount, String name) throws IOException{
         PrintWriter out = new PrintWriter (new FileWriter (name));
-        out.println(n);
+        out.println(amount);
         out.flush();
         out.close();
     }
