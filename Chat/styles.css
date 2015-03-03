@@ -159,7 +159,7 @@ body {
 	left: 0%;
 	width: 80%;
 }
-.iconD {
+.iconDelete {
 	position: absolute;
 	left: 90%;
 	top: 0%;
@@ -167,7 +167,7 @@ body {
 	width: 15px;
 	cursor: pointer;
 }
-.iconE {
+.iconEdit {
 	position: absolute;
 	left: 86%;
 	top: 0%;
