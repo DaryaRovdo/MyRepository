@@ -133,7 +133,7 @@ textarea {
 #iconDelete {
 	position: absolute;
 	left: 96%;
-	top: 0%;
+	top: 50%;
 	height: 13px;
 	width: 15px;
 	cursor: pointer;
@@ -141,7 +141,7 @@ textarea {
 #iconEdit {
 	position: absolute;
 	left: 93%;
-	top: 0%;
+	top: 50%;
 	height: 13px;
 	width: 15px;
 	cursor: pointer;
