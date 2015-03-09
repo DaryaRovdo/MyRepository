@@ -7,35 +7,35 @@
 	</head>
 	<body onload = run()>	
 		<link rel="stylesheet" href="styles.css">
-		<img id = "chatty" src="chatty.png" alt = "<3 Chatty">
-		<span id = "serverIn">Server is availible!</span>
+		<img id = "chattyImg" src="chatty.png" alt = "<3 Chatty">
+		<span id = "serverOn">Server is availible!</span>
 		<div class = "chat">
 			<div class = "panel">
 					<textarea disabled id = "name">Your name</textarea>
 					<input type = "text" id = "enterName"></input>
-					<button class = "button" id = "change">Enter name</button>
+					<button class = "button" id = "changeNameBtn">Enter name</button>
 			</div>
 			<div class = "messageArea">
 				<div class = "friendMessage">
-					<span class = "friendName"> Anton:&nbsp  </span> Hello!
+					<span class = "friendName">Anton:&nbsp </span>  <span>Hello!</span>
 				</div>
 				<div class = "userMessage">
-					<div>  <span class = "userName"> Darya:&nbsp  </span> Hi, dude! </div>	
+					<div>  <span class = "userName">Darya:&nbsp</span> <span>Hi, dude!</span> </div>	
 					<img id = "iconDelete" src="delete.png" alt = "Delete message">
 					<img id = "iconEdit" src="edit.png" alt = "Edit message">
 				</div>
 				<div class = "friendMessage">
-					<span class = "friendName"> Anton:&nbsp  </span> How are you?
+					<span class = "friendName">Anton:&nbsp</span> <span>How are you?</span>
 				</div>
 				<div class = "userMessage">
-					<div>  <span class = "userName"> Darya:&nbsp  </span> Fine, and you? </div>	
+					<div>  <span class = "userName">Darya:&nbsp</span> <span>Fine, and you?<span> </div>	
 					<img id = "iconDelete" src="delete.png" alt = "Delete message">
 					<img id = "iconEdit" src="edit.png" alt = "Edit message">
 				</div>
 			</div>
 			<div class = "userArea">
-				<textarea id = "text" placeholder = "Type your message here"></textarea>
-				<button class = "button" id = "sendB"> Send </button>
+				<textarea id = "messageText" placeholder = "Type your message here"></textarea>
+				<button class = "button" id = "sendBtn"> Send </button>
 			</div>
 		</div>
 	</body>

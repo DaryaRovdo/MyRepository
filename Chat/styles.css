@@ -5,14 +5,14 @@ textarea {
 	resize: none;
 	overflow: auto;
 }
-#chatty {
+#chattyImg{
 	position: absolute;
 	top: 3%;
 	left: 5%;
 	width: 20%;
 	float: left;
 }
-#serverIn {
+#serverOn {
 	position: absolute;
 	top: 7%;
 	left: 80%;
@@ -49,7 +49,7 @@ textarea {
 	width: 50%;
 	height: 20%;
 }
-.panel button {
+#changeNameBtn {
 	position: absolute;
 	left: 65%;
 	top: 45%;
@@ -80,7 +80,7 @@ textarea {
 	width: 68%;
 	overflow: hidden;
 }
-.userArea textarea {
+#messageText {
 	border: solid 2px RGB(115,129,106);
 	background-color: RGB(123,179,141);
 	position: absolute;
@@ -89,7 +89,7 @@ textarea {
 	height: 99%;
 	width: 80%;
 }
-.userArea button {
+#sendBtn {
 	position: absolute;
 	left: 85%;
 	top: 25%;
@@ -110,12 +110,20 @@ textarea {
 	top: 1%;
 	width: 97%;
 	color: green;
+	word-wrap: break-word;
+}
+.friendMessage span {
+	white-space: pre-wrap;
 }
 .userMessage {
 	position: relative;
 	left: 3%;
 	width: 97%;
 	color: green;
+	word-wrap: break-word;
+}
+.userMessage span {
+	white-space: pre-wrap;
 }
 .userMessage div {
 	position: relative;
