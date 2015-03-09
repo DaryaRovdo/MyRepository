@@ -4,16 +4,16 @@ function run(){
 }
 
 function delegateEvent(evtObj) {
-	if(evtObj.type == "click" && evtObj.target.id.contains("sendBtn")) {
+	if(evtObj.type == "click" &&  evtObj.target.getAttribute("id") == "sendBtn") {
 		onSendButtonClick(evtObj);
 	}
-	if(evtObj.type == "click" && evtObj.target.id.contains("changeNameBtn")) {
+	if(evtObj.type == "click" && evtObj.target.getAttribute("id") == "changeNameBtn") {
 		onChangeNameButtonClick(evtObj);
 	}
-	if(evtObj.type == "click" && evtObj.target.id.contains("iconDelete")) {
+	if(evtObj.type == "click" && evtObj.target.getAttribute("id") == "iconDelete") {
 		onIconDeleteClick(evtObj);
 	}
-	if(evtObj.type == "click" && evtObj.target.id.contains("iconEdit")) {
+	if(evtObj.type == "click" && evtObj.target.getAttribute("id") == "iconEdit") {
 		onIconEditClick(evtObj);
 	}
 }
