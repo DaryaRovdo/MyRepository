@@ -4,7 +4,7 @@ function run(){
 }
 
 function delegateEvent(evtObj) {
-	if(evtObj.type === "click" && evtObj.target.id.contains("sendBtn")) {
+	if(evtObj.type == "click" && evtObj.target.id.contains("sendBtn")) {
 		onSendButtonClick(evtObj);
 	}
 	if(evtObj.type == "click" && evtObj.target.id.contains("changeNameBtn")) {
