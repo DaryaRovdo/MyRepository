@@ -24,14 +24,17 @@ function run(){
 			theMessage("Anton", "How are you?", false)
 		];
 	createAllMessages(allMessages);
-	var name = restore("chat username");
+	var name = restore("chat username") || "";
 	setName(name);
+	if (name != "")
+		document.getElementById("changeNameBtn").innerHTML = "Change name";
 }
 
 function createAllMessages(allMessages) {
 	for(var i = 0; i < allMessages.length; i++)
 		addMessage(allMessages[i]);
 }
+
 function setName(name) {
 	document.getElementById("name").innerHTML = name;
 }
@@ -50,14 +53,24 @@ function delegateEvent(evtObj) {
 		onIconEditClick(evtObj);
 	}
 }
+
 function onIconDeleteClick(evtObj) {
 	var conf = confirm("Confirm removal, please :)");
 	if (conf == true)
 	{
-		evtObj.target.parentNode.parentNode.removeChild(evtObj.target.parentNode);
+		var message = evtObj.target.parentNode;
+		message.parentNode.removeChild(message);
+		var i;
+		for (i = 0; i < messageList.length; i++)
+			if (messageList[i].id == message.id)
+				break;
+		messageList.splice(i, 1);
+		store("chat messages", messageList);
 	}
 }
+
 var messageToEdit;
+
 function onIconEditClick(evtObj) {
 	var message = evtObj.target.parentNode;
 	var messageArea = document.getElementById("messageText");
@@ -66,8 +79,9 @@ function onIconEditClick(evtObj) {
 	sendBtn.innerHTML = "Edit";
 	messageToEdit = message;
 }
+
 function onSendButtonClick(){
-	if (document.getElementById("changeNameBtn").innerHTML == "Enter name" || document.getElementById("name").value == "")
+	if (document.getElementById("name").value == "")
 		alert("Enter your name, please :)");
 	else if (document.getElementById("messageText").value == "")
 		alert("Your message is empty! :(");
@@ -81,15 +95,24 @@ function onSendButtonClick(){
 		var text = document.getElementById("messageText").value;
 		document.getElementById("messageText").value = "";
 		messageToEdit.getElementsByTagName("div")[0].getElementsByTagName("span")[1].innerHTML = text;
+		var i;
+		for (i = 0; i < messageList.length; i++)
+			if (messageList[i].id == messageToEdit.id)
+				break;
+		messageList[i].textMessage = text;
+		store("chat messages", messageList);
 	}
 }
+
 function onChangeNameButtonClick() {
-	var nameText = document.getElementById("enterName");
-	document.getElementById("changeNameBtn").innerHTML = "Change name";
-	setName(nameText.value);
-	store("chat username", nameText.value);
-	nameText.value = "";
+	var name = document.getElementById("enterName")
+	if (name != "")
+		document.getElementById("changeNameBtn").innerHTML = "Change name";
+	setName(name.value);
+	store("chat username", name.value);
+	name.value = "";
 }
+
 function addMessage(message){
 	if (message.user == true) {
 		var divItem = document.createElement("div");
@@ -99,6 +122,7 @@ function addMessage(message){
 		var deleteImg = document.createElement("img");
 		var editImg = document.createElement("img");
 		divItem.classList.add("userMessage");
+		divItem.id = message.id;
 		spanName.classList.add("userName");
 		deleteImg.id =  "iconDelete";
 		deleteImg.setAttribute("src", "delete.png");
@@ -119,6 +143,7 @@ function addMessage(message){
 		var spanName = document.createElement("span");
 		var spanText = document.createElement("span");
 		divItem.classList.add("friendMessage");
+		divItem.id = message.id;
 		spanName.classList.add("friendName");
 		spanName.innerHTML = message.nameMessage + ":&nbsp";
 		spanText.innerHTML = message.textMessage;
@@ -129,6 +154,7 @@ function addMessage(message){
 	items.appendChild(divItem);
 	messageList.push(message);
 }
+
 function store(lsName, toSave) {
 	if(typeof(Storage) == "undefined") {
 		alert("localStorage is not accessible!");
