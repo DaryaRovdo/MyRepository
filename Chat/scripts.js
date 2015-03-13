@@ -1,6 +1,39 @@
+var uniqueId = function() {
+	var date = Date.now();
+	var random = Math.random() * Math.random();
+
+	return Math.floor(date * random).toString();
+};
+
+var theMessage = function(name, text, userFlag) {
+	return {
+		textMessage: text,
+		nameMessage: name,
+		user: userFlag,
+		id: uniqueId()
+	};
+};
+
+var messageList = [];
+
 function run(){
 	var appContainer = document.getElementsByClassName("chat")[0];
 	appContainer.addEventListener("click", delegateEvent);
+	var allMessages = restore("chat messages") || [ theMessage("Anton", "Hello!", false),
+			theMessage("Darya", "Hi, dude!",true),
+			theMessage("Anton", "How are you?", false)
+		];
+	createAllMessages(allMessages);
+	var name = restore("chat username");
+	setName(name);
+}
+
+function createAllMessages(allMessages) {
+	for(var i = 0; i < allMessages.length; i++)
+		addMessage(allMessages[i]);
+}
+function setName(name) {
+	document.getElementById("name").innerHTML = name;
 }
 
 function delegateEvent(evtObj) {
@@ -39,9 +72,9 @@ function onSendButtonClick(){
 	else if (document.getElementById("messageText").value == "")
 		alert("Your message is empty! :(");
 	else if (document.getElementById("sendBtn").innerHTML != "Edit") {
-		var text = document.getElementById("messageText");
-		addMessage(text.value);
-		text.value = "";
+		addMessage(theMessage(document.getElementById("name").value, document.getElementById("messageText").value, true));
+		document.getElementById("messageText").value = "";
+		store("chat messages", messageList);
 	}
 	else {
 		document.getElementById("sendBtn").innerHTML = "Send";
@@ -53,31 +86,62 @@ function onSendButtonClick(){
 function onChangeNameButtonClick() {
 	var nameText = document.getElementById("enterName");
 	document.getElementById("changeNameBtn").innerHTML = "Change name";
-	document.getElementById("name").innerHTML = nameText.value;
+	setName(nameText.value);
+	store("chat username", nameText.value);
 	nameText.value = "";
 }
-function addMessage(text){
-	var divItem = document.createElement("div");
-	var divText = document.createElement("div");
-	var spanName = document.createElement("span");
-	var spanText = document.createElement("span");
-	var deleteImg = document.createElement("img");
-	var editImg = document.createElement("img");
-	divItem.classList.add("userMessage");
-	spanName.classList.add("userName");
-	deleteImg.id =  "iconDelete";
-	deleteImg.setAttribute("src", "delete.png");
-	deleteImg.setAttribute("alt", "Delete message");
-	editImg.id = "iconEdit";
-	editImg.setAttribute("src", "edit.png");
-	editImg.setAttribute("alt", "Edit message");
-	spanName.innerHTML = document.getElementById("name").value + ":&nbsp";
-	spanText.innerHTML = text;
-	divText.appendChild(spanName);
-	divText.appendChild(spanText);
-	divItem.appendChild(divText);
-	divItem.appendChild(deleteImg);
-	divItem.appendChild(editImg);
+function addMessage(message){
+	if (message.user == true) {
+		var divItem = document.createElement("div");
+		var divText = document.createElement("div");
+		var spanName = document.createElement("span");
+		var spanText = document.createElement("span");
+		var deleteImg = document.createElement("img");
+		var editImg = document.createElement("img");
+		divItem.classList.add("userMessage");
+		spanName.classList.add("userName");
+		deleteImg.id =  "iconDelete";
+		deleteImg.setAttribute("src", "delete.png");
+		deleteImg.setAttribute("alt", "Delete message");
+		editImg.id = "iconEdit";
+		editImg.setAttribute("src", "edit.png");
+		editImg.setAttribute("alt", "Edit message");
+		spanName.innerHTML = message.nameMessage + ":&nbsp";
+		spanText.innerHTML = message.textMessage;
+		divText.appendChild(spanName);
+		divText.appendChild(spanText);
+		divItem.appendChild(divText);
+		divItem.appendChild(deleteImg);
+		divItem.appendChild(editImg);
+	}
+	else {
+		var divItem = document.createElement("div");
+		var spanName = document.createElement("span");
+		var spanText = document.createElement("span");
+		divItem.classList.add("friendMessage");
+		spanName.classList.add("friendName");
+		spanName.innerHTML = message.nameMessage + ":&nbsp";
+		spanText.innerHTML = message.textMessage;
+		divItem.appendChild(spanName);
+		divItem.appendChild(spanText);
+	}
 	var items = document.getElementsByClassName("messageArea")[0];
 	items.appendChild(divItem);
+	messageList.push(message);
+}
+function store(lsName, toSave) {
+	if(typeof(Storage) == "undefined") {
+		alert("localStorage is not accessible!");
+		return;
+	}
+	localStorage.setItem(lsName, JSON.stringify(toSave));
+}
+
+function restore(lsName) {
+	if(typeof(Storage) == "undefined") {
+		alert("localStorage is not accessible");
+		return;
+	}
+	var item = localStorage.getItem(lsName);
+	return item && JSON.parse(item);
 }
