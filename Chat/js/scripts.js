@@ -19,6 +19,7 @@ var messageList = [];
 function run(){
 	var appContainer = document.getElementsByClassName("chat")[0];
 	appContainer.addEventListener("click", delegateEvent);
+	appContainer.addEventListener("keydown", delegateEvent);
 	var allMessages = restore("chat messages") || [ theMessage("Anton", "Hello!", false),
 			theMessage("Darya", "Hi, dude!",true),
 			theMessage("Anton", "How are you?", false)
@@ -51,6 +52,13 @@ function delegateEvent(evtObj) {
 	}
 	if(evtObj.type == "click" && evtObj.target.getAttribute("id") == "iconEdit") {
 		onIconEditClick(evtObj);
+	}
+	if(evtObj.type == "keydown" && evtObj.keyCode == 13 && document.activeElement.id == "enterName") {
+		onChangeNameButtonClick(evtObj);
+	}
+	if(evtObj.type == "keydown" && evtObj.shiftKey == false && evtObj.keyCode == 13 && document.activeElement.id == "messageText") {
+		evtObj.preventDefault();
+		onSendButtonClick(evtObj);
 	}
 }
 
