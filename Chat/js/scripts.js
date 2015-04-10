@@ -25,6 +25,10 @@ function run(){
 			theMessage("Anton", "How are you?", false)
 		];
 	createAllMessages(allMessages);
+	var items = $(".messageArea");
+	items.animate({
+	      scrollTop : items[0].scrollHeight - items.height()
+	}, 2000);
 	var name = restore("chat username") || "";
 	setName(name);
 	if (name != "")
@@ -110,8 +114,11 @@ function onSendButtonClick(){
 		messageList[i].textMessage = text;
 		store("chat messages", messageList);
 	}
+	var items = $(".messageArea");
+	items.animate({
+	      scrollTop : items[0].scrollHeight - items.height()
+	}, 500);
 }
-
 function onChangeNameButtonClick() {
 	var name = document.getElementById("enterName")
 	if (name != "")

@@ -51,11 +51,12 @@ textarea {
 }
 #changeNameBtn {
 	position: absolute;
-	left: 65%;
+	left: 70%;
 	top: 45%;
 }
 
 .button {
+	position: absolute;
 	background-color: RGB(123,179,141);
 	-moz-border-radius: 30%;
 	-webkit-border-radius: 30%;
@@ -91,8 +92,8 @@ textarea {
 }
 #sendBtn {
 	position: absolute;
-	left: 85%;
-	top: 25%;
+	left: 87%;
+	top: 40%;
 }
 .messageArea {
 	position: absolute;
@@ -107,9 +108,10 @@ textarea {
 .friendMessage {
 	position: relative;
 	left: 3%;
-	top: 1%;
+	top: 2%;
 	width: 97%;
 	color: green;
+	font-size: larger;
 	word-wrap: break-word;
 }
 .friendMessage span {
@@ -118,8 +120,10 @@ textarea {
 .userMessage {
 	position: relative;
 	left: 3%;
+	top: 2%;
 	width: 97%;
 	color: green;
+	font-size: larger;
 	word-wrap: break-word;
 }
 .userMessage span {
@@ -134,16 +138,16 @@ textarea {
 	position: absolute;
 	left: 96%;
 	top: 50%;
-	height: 13px;
-	width: 15px;
+	height: 20px;
+	width: 20px;
 	cursor: pointer;
 }
 #iconEdit {
 	position: absolute;
 	left: 93%;
 	top: 50%;
-	height: 13px;
-	width: 15px;
+	height: 20px;
+	width: 20px;
 	cursor: pointer;
 }
 .userName {
