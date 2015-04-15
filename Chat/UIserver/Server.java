@@ -4,18 +4,27 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class Server implements HttpHandler {
 
-    private TreeMap<Integer, Message> history = new TreeMap <Integer, Message>();
+    private TreeMap<Integer, Message> history = new TreeMap <Integer, Message>();//for cool id
+    private ArrayList<Message> toEdit = new ArrayList <Message>();
     private MessageExchange messageExchange = new MessageExchange();
+    private int id = 0;
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    private static PrintWriter log;
 
     public static void main(String[] args) {
         if (args.length != 1)
@@ -27,15 +36,12 @@ public class Server implements HttpHandler {
                 HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
                 System.out.println("Server started.");
                 String serverHost = InetAddress.getLocalHost().getHostAddress();
-                System.out.println("Get list of messages: GET http://" + serverHost + ":" + port + "/chat?token={token}");
-                System.out.println("Send message: POST http://" + serverHost + ":" + port + "/chat provide body json in format {\"name\" : \"{name}\", \"message\" : \"{message}\"}");
-		        System.out.println("Delete message: DELETE http://" + serverHost + ":" + port + "/chat provide body json in format {\"id\" : \"{id}\"} ");
-                System.out.println("Edit message: PUT http://" + serverHost + ":" + port + "/chat provide body json in format {\"id\" : \"{id}\"}, \"message\" : \"{message}\"}");
                 server.createContext("/chat", new Server());
                 server.setExecutor(null);
                 server.start();
+                log  = new PrintWriter(new FileWriter("log.txt"));
             } catch (IOException e) {
-                System.out.println("Error creating http server: " + e);
+                System.out.println("Error: " + e);
             }
         }
     }
@@ -52,6 +58,8 @@ public class Server implements HttpHandler {
             doDelete(httpExchange);
         } else if ("PUT".equals(httpExchange.getRequestMethod())) {
             doPut(httpExchange);
+        } else if ("OPTIONS".equals(httpExchange.getRequestMethod())) {
+            response = "";
         } else {
             response = "Unsupported http method: " + httpExchange.getRequestMethod();
         }
@@ -65,24 +73,46 @@ public class Server implements HttpHandler {
             Map<String, String> map = queryToMap(query);
             String token = map.get("token");
             if (token != null && !"".equals(token)) {
-                int index = messageExchange.getIndex(token);
-                return messageExchange.getServerResponse(new TreeMap <Integer, Message> (history.subMap(index, history.size())));
+                int index;
+                if (token.substring(0, 2).compareTo("TN") == 0) {
+                    index = messageExchange.getIndex(token);
+                    return messageExchange.getServerResponse(history, index);
+                }
+                if (token.substring(0, 2).compareTo("TK") == 0) {
+                    index = messageExchange.getIndex(token);
+                    return messageExchange.getServerResponseToEdit(toEdit, index);
+                }
             } else {
+                Date time = new Date();
+                System.out.println(timeFormat.format(time) + " Can't send history: token query parameter is absent in url");
+                log.println(timeFormat.format(time) + " Can't send history: token query parameter is absent in url");
+                log.flush();
                 return "Token query parameter is absent in url: " + query;
             }
         }
+        Date time = new Date();
+        System.out.println(timeFormat.format(time) + " Can't send history: absent query in url");
+        log.println(timeFormat.format(time) + " Can't send history: absent query in url");
+        log.flush();
         return  "Absent query in url";
     }
 
     private void doPost(HttpExchange httpExchange) {
         try {
             Message message = messageExchange.getClientMessage(httpExchange.getRequestBody());
-            message.setId(history.size());
             message.setDeleted(false);
-            System.out.println("Get Message from " + message.getUser() + " : " + message.getText());
-            history.put(message.getId(), message);
+            message.setId(id);
+            Date time = new Date();
+            System.out.println(timeFormat.format(time) + " Get message from " + message.getUser() + " : " + message.getText());
+            log.println(timeFormat.format(time) + " Get message from " + message.getUser() + " : " + message.getText());
+            log.flush();
+            history.put(id, message);
+            id++;
         } catch (ParseException e) {
-            System.err.println("Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            Date time = new Date();
+            System.err.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.flush();
         }
     }
 
@@ -94,11 +124,22 @@ public class Server implements HttpHandler {
                 newMessage.setText(newMessage.getText() + " [DELETED]");
                 newMessage.setDeleted(true);
                 history.put(newMessage.getId(), newMessage);
-                System.out.println("Delete Message with id " + message.getId());
-            } else
-                System.out.println("No message with such id in history!");
+                toEdit.add(newMessage);
+                Date time = new Date();
+                System.out.println(timeFormat.format(time) + " Delete message with id " + message.getId());
+                log.println(timeFormat.format(time) + " Delete message with id " + message.getId());
+                log.flush();
+            } else {
+                Date time = new Date();
+                System.out.println(timeFormat.format(time) + " Can't delete message: No message with such id in history!");
+                log.println(timeFormat.format(time) + " Can't delete message: No message with such id in history!");
+                log.flush();
+            }
         } catch (ParseException e) {
-            System.err.println("Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            Date time = new Date();
+            System.err.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.flush();
         }
     }
 
@@ -109,11 +150,22 @@ public class Server implements HttpHandler {
                 Message newMessage = history.get(message.getId());
                 newMessage.setText(message.getText());
                 history.put(newMessage.getId(), newMessage);
-                System.out.println("Edit Message with id " + newMessage.getId() + " : " + newMessage.getText());
-            } else
-                System.out.println("No message with such id in history!");
+                toEdit.add(newMessage);
+                Date time = new Date();
+                System.out.println(timeFormat.format(time) + " Edit message with id " + newMessage.getId() + " : " + newMessage.getText());
+                log.println(timeFormat.format(time) + " Edit message with id " + newMessage.getId() + " : " + newMessage.getText());
+                log.flush();
+            } else {
+                Date time = new Date();
+                System.out.println(timeFormat.format(time) + " Can't edit message: No message with such id in history!");
+                log.println(timeFormat.format(time) + " Can't edit message: No message with such id in history!");
+                log.flush();
+            }
         } catch (ParseException e) {
-            System.err.println("Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            Date time = new Date();
+            System.err.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.println(timeFormat.format(time) + " Invalid user request: " + httpExchange.getRequestBody() + " " + e.getMessage());
+            log.flush();
         }
     }
 
@@ -122,6 +174,9 @@ public class Server implements HttpHandler {
             byte[] bytes = response.getBytes();
             Headers headers = httpExchange.getResponseHeaders();
             headers.add("Access-Control-Allow-Origin","*");
+            if("OPTIONS".equals(httpExchange.getRequestMethod())) {
+                headers.add("Access-Control-Allow-Methods","PUT, DELETE, POST, GET, OPTIONS");
+            }
             httpExchange.sendResponseHeaders(200, bytes.length);
             OutputStream os = httpExchange.getResponseBody();
             os.write( bytes);
