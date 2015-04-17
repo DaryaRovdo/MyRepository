@@ -8,7 +8,7 @@ var theMessage = function(user, text, userFlag) {
 };
 
 var appState = {
-	mainUrl : "http://192.168.1.2:999/chat",
+	mainUrl : "http://localhost:999/chat",
 	token : "TN11EN",
 	tokenToEdit : "TK11EN"
 };
