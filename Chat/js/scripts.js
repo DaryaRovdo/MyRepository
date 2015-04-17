@@ -38,10 +38,6 @@ function createAllMessages(allMessages) {
 		addMessage(allMessages[i]);
 		}
 	}
-	var items = $(".messageArea");
-	items.animate({
-	      scrollTop : items[0].scrollHeight - items.height()
-	}, 500);
 }
 
 function setName(name) {
@@ -171,9 +167,7 @@ function addMessage(message){
 	items.appendChild(divItem);
 	messageList.push(message);
 	var items = $(".messageArea");
-	items.animate({
-	      scrollTop : items[0].scrollHeight - items.height()
-	}, 200);
+	items.scrollTop(items[0].scrollHeight - items.height());
 }
 
 function deleteMessage(message) {
