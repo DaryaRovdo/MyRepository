@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class MessageExchange {
 
@@ -14,6 +15,11 @@ public class MessageExchange {
     public String getToken(int index) {
         Integer number = index * 8 + 11;
         return "TN" + number + "EN";
+    }
+
+    public String getTokenToEdit(int index) {
+        Integer number = index * 8 + 11;
+        return "TK" + number + "EN";
     }
 
     public int getIndex(String token) {
@@ -28,22 +34,39 @@ public class MessageExchange {
             jo.put("id", ((Message) entry.getValue()).getId());
             jo.put("user", ((Message) entry.getValue()).getUser());
             jo.put("text", ((Message) entry.getValue()).getText());
+            jo.put("deleted", ((Message) entry.getValue()).isDeleted());
+            jo.put("userFlag", false);
             array.add(jo);
         }
         return array;
     }
 
-    public String getServerResponse(TreeMap <Integer, Message> messages) {
+    public JSONArray ListToJSONArray(ArrayList <Message> messages)
+    {
+        JSONArray array = new JSONArray();
+        for(int i = 0; i < messages.size(); i++) {
+            JSONObject jo = new JSONObject();
+            jo.put("id", messages.get(i).getId());
+            jo.put("user", messages.get(i).getUser());
+            jo.put("text", messages.get(i).getText());
+            jo.put("deleted", messages.get(i).isDeleted());
+            jo.put("userFlag", false);
+            array.add(jo);
+        }
+        return array;
+    }
+
+    public String getServerResponse(TreeMap <Integer, Message> messages, int index) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("messages", mapToJSONArray(messages));
+        jsonObject.put("messages", mapToJSONArray(messages).subList(index, messages.size()));
         jsonObject.put("token", getToken(messages.size()));
         return jsonObject.toJSONString();
     }
 
-    public String getClientSendMessageRequest(String message, String name) {
+    public String getServerResponseToEdit(ArrayList <Message> messages, int index) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", name);
-        jsonObject.put("message", message);
+        jsonObject.put("messages", ListToJSONArray(messages).subList(index, messages.size()));
+        jsonObject.put("token", getTokenToEdit(messages.size()));
         return jsonObject.toJSONString();
     }
 
@@ -52,10 +75,10 @@ public class MessageExchange {
         Message m = new Message();
         if (o.containsKey("id"))
             m.setId(Integer.parseInt(o.get("id").toString()));
-        if (o.containsKey("name"))
-            m.setUser((String) o.get("name"));
-        if (o.containsKey("message"))
-            m.setText((String) o.get("message"));
+        if (o.containsKey("user"))
+            m.setUser((String) o.get("user"));
+        if (o.containsKey("text"))
+            m.setText((String) o.get("text"));
         return m;
     }
 
